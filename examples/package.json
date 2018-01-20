@@ -10,7 +10,8 @@
     "query-assets": "nodemon src/query-assets.js --exec babel-node",
     "seed-func": "nodemon src/seed-func.js --exec babel-node",
     "basic-async": "nodemon src/basic-usage-async-await.js --exec babel-node",
-    "top-sort": "nodemon src/topology-sorting.js --exec babel-node"
+    "top-sort": "nodemon src/topology-sorting.js --exec babel-node",
+    "top-sort-v2": "nodemon src/topsort.js --exec babel-node"
   },
   "author": "BigchainDB",
   "license": "MIT",
