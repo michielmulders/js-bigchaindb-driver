@@ -1,6 +1,10 @@
+import topsortTransactions from '../../src/utils/topologySorting'
+
 const driver = require('bigchaindb-driver') // eslint-disable-line import/no-unresolved
 require('dotenv').config()
 
+/* let result = driver.Transaction.ccJsonLoad('test')
+console.log(result) */
 
 // ======== Preparation ======== //
 const conn = new driver.Connection('https://test.bigchaindb.com/api/v1/', {
@@ -63,10 +67,10 @@ conn.postTransaction(txCreateAliceSimpleSigned)
         const txTransferCharles = driver.Transaction.makeTransferTransaction(
             [{ tx: txTransferBob, output_index: 0 }],
             [driver.Transaction.makeOutput(driver.Transaction.makeEd25519Condition(charles.publicKey))],
-            { price: '80 euro' }
+            { price: '75 euro' }
         )
 
-        // Sign transfer transaction with Bob's private key
+        // Sign transfer transaction with Alice's private key
         const txTransferCharlesSigned =
             driver.Transaction.signTransaction(txTransferCharles, bob.privateKey)
 
@@ -75,6 +79,8 @@ conn.postTransaction(txCreateAliceSimpleSigned)
     .then(res => conn.pollStatusAndFetchTransaction(res.id))
 
 
-// ======== Use Topology Sort to sort transactions for bicycle asset ======== //
-    .then(() => driver.topsortTransactions(txCreateAliceSimpleSigned.id))
-    .then((topsortTxs => console.log(topsortTxs))) // eslint-disable-line no-console
+// ======== Topsort bicycle asset ======== //
+    // Retrieve all transactions for asset
+    .then(() => conn.listTransactions(txCreateAliceSimpleSigned.id, 'TRANSFER'))
+    .then(txArray => topsortTransactions(txArray))
+    .then(sortedTxs => console.log(sortedTxs)) // eslint-disable-line no-console
